@@ -229,6 +229,21 @@ body{
   animation:rainbowBorder 1.5s linear infinite, glowPulse 2s ease-in-out infinite;
   box-shadow:0 6px 20px rgba(255,107,174,.5);
 }
+/* みんななかよし (4倍サイズ アニメ風シール) */
+.sticker-slot.collected.rarity-f{
+  background:linear-gradient(135deg,#FFF0FA,#FFF9E0,#F0F4FF);
+  border:4px solid #FF6BAE;
+  box-shadow:0 6px 20px rgba(255,107,174,.35);
+  animation:glowPulse 2.5s ease-in-out infinite;
+}
+.sticker-slot.rarity-f{aspect-ratio:1;border-radius:22px;overflow:hidden;padding:0}
+.sticker-slot.rarity-f.locked{border-radius:22px}
+.sticker-slot.rarity-f .sticker-img{width:100%;height:100%;object-fit:contain;background:linear-gradient(135deg,#FFF8FC,#F8FAFF);display:block}
+.sticker-slot.rarity-f.locked .sticker-emoji{font-size:clamp(36px,9vw,56px)}
+.album-grid.grid-friend{grid-template-columns:repeat(2,1fr);gap:14px}
+@media(min-width:600px){.album-grid.grid-friend{grid-template-columns:repeat(3,1fr)}}
+.rarity-friend .rarity-badge{background:linear-gradient(135deg,#FF6BAE,#FFD93D,#5CC87A,#5BA4FF);animation:rainbowBorder 3s linear infinite}
+
 /* ひみつ */
 .sticker-slot.collected.rarity-secret{
   background:linear-gradient(135deg,#FFD700,#FF6BAE,#B57BFF);
@@ -471,7 +486,7 @@ rt{font-size:0.55em;color:#999;line-height:1.2}
   <div class="album-progress-wrap">
     <div class="album-progress-top">
       <div class="album-progress-label">コレクション</div>
-      <div class="album-progress-count" id="albumCount">0 / 100</div>
+      <div class="album-progress-count" id="albumCount">0 / 116</div>
     </div>
     <div class="album-prog-bar"><div class="album-prog-fill" id="albumProgFill" style="width:0%"></div></div>
   </div>
@@ -506,6 +521,14 @@ rt{font-size:0.55em;color:#999;line-height:1.2}
       <div class="album-section-count" id="ac-ultra">0/15</div>
     </div>
     <div class="album-grid" id="ag-ultra"></div>
+  </div>
+  <div class="album-section rarity-friend">
+    <div class="album-section-header">
+      <div class="rarity-badge">みんな</div>
+      <div class="album-section-name">みんななかよし</div>
+      <div class="album-section-count" id="ac-friend">0/15</div>
+    </div>
+    <div class="album-grid grid-friend" id="ag-friend"></div>
   </div>
   <div class="album-section rarity-secret" id="secretSection">
     <div class="album-section-header">
@@ -1052,6 +1075,23 @@ const STICKERS = [
   {id:'s98',e:'🌟',n:'ウルトラスター',r:'u'},
   {id:'s99',e:'🏅',n:'まなびマスター',r:'u'},
   {id:'s100',e:'👑',n:'まなびのおうさま',r:'u'},
+
+  // みんななかよし 15枚 — アニメ風シール (画像)
+  {id:'f01',img:'stickers/minna/01.png',n:'なかよし1',r:'f'},
+  {id:'f02',img:'stickers/minna/02.png',n:'なかよし2',r:'f'},
+  {id:'f03',img:'stickers/minna/03.png',n:'なかよし3',r:'f'},
+  {id:'f04',img:'stickers/minna/04.png',n:'なかよし4',r:'f'},
+  {id:'f05',img:'stickers/minna/05.png',n:'なかよし5',r:'f'},
+  {id:'f06',img:'stickers/minna/06.png',n:'なかよし6',r:'f'},
+  {id:'f07',img:'stickers/minna/07.png',n:'なかよし7',r:'f'},
+  {id:'f08',img:'stickers/minna/08.png',n:'なかよし8',r:'f'},
+  {id:'f09',img:'stickers/minna/09.png',n:'なかよし9',r:'f'},
+  {id:'f10',img:'stickers/minna/10.png',n:'なかよし10',r:'f'},
+  {id:'f11',img:'stickers/minna/11.png',n:'なかよし11',r:'f'},
+  {id:'f12',img:'stickers/minna/12.png',n:'なかよし12',r:'f'},
+  {id:'f13',img:'stickers/minna/13.png',n:'なかよし13',r:'f'},
+  {id:'f14',img:'stickers/minna/14.png',n:'なかよし14',r:'f'},
+  {id:'f15',img:'stickers/minna/15.png',n:'なかよし15',r:'f'},
 
   // ひみつ (コンプリートボーナス)
   {id:'s101',e:'🌈',n:'まなびランドのかみさま',r:'secret'},
@@ -1619,7 +1659,16 @@ function applyStickerChoice(give){
     earned.forEach(id=>{
       const st=STICKERS.find(s=>s.id===id);if(!st)return;
       const d=document.createElement('div');d.style.textAlign='center';
-      const it=document.createElement('div');it.className='result-sticker-item';it.textContent=st.e;d.appendChild(it);
+      const it=document.createElement('div');it.className='result-sticker-item';
+      if(st.img){
+        it.style.padding='0';it.style.overflow='hidden';
+        const im=document.createElement('img');im.src=st.img;im.alt=st.n||'';
+        im.style.cssText='width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block';
+        it.appendChild(im);
+      }else{
+        it.textContent=st.e;
+      }
+      d.appendChild(it);
       const nm=document.createElement('div');nm.style.cssText='font-size:10px;font-weight:700;color:#888;margin-top:3px';nm.textContent=st.n;d.appendChild(nm);
       if(G.newStickers.includes(id)){const nw=document.createElement('div');nw.className='result-new';nw.textContent='NEW!';d.appendChild(nw)}
       sl.appendChild(d);
@@ -1634,7 +1683,7 @@ function applyStickerChoice(give){
   }
 }
 function getStickers(sc,tot,diff){
-  const pool={n:STICKERS.filter(s=>s.r==='n'),r:STICKERS.filter(s=>s.r==='r'),s:STICKERS.filter(s=>s.r==='s'),u:STICKERS.filter(s=>s.r==='u')};
+  const pool={n:STICKERS.filter(s=>s.r==='n'),r:STICKERS.filter(s=>s.r==='r'),s:STICKERS.filter(s=>s.r==='s'),u:STICKERS.filter(s=>s.r==='u'),f:STICKERS.filter(s=>s.r==='f')};
   const rnd=p=>p[Math.floor(Math.random()*p.length)].id;
   const earned=[];const ratio=sc/tot;
   if(ratio>=0.4)earned.push(rnd(pool.n));
@@ -1642,7 +1691,10 @@ function getStickers(sc,tot,diff){
   if(ratio>=0.8)earned.push(rnd(pool.r));
   if(ratio===1){
     earned.push(rnd(pool.r));
-    if(diff!=='easy')earned.push(rnd(pool.s));
+    if(diff!=='easy'){
+      // 超レア枠: でんせつ か みんななかよし を半々で
+      earned.push(rnd(Math.random()<0.5?pool.s:pool.f));
+    }
     if(diff==='hard')earned.push(rnd(pool.u));
   }
   return[...new Set(earned)];
@@ -1680,20 +1732,28 @@ function closeComplete(){
 // ========== シールアルバム ==========
 function renderAlbum(){
   const col=G.collected;
-  const groups={n:[],r:[],s:[],u:[],secret:[]};
+  const groups={n:[],r:[],s:[],u:[],f:[],secret:[]};
   STICKERS.forEach(st=>{groups[st.r].push(st)});
   let total=0;
-  [['normal','n',30],['rare','r',30],['super','s',25],['ultra','u',15]].forEach(([gname,rkey,max])=>{
+  [['normal','n',30],['rare','r',30],['super','s',25],['ultra','u',15],['friend','f',15]].forEach(([gname,rkey,max])=>{
     const grid=document.getElementById('ag-'+gname);grid.innerHTML='';
     let cnt=0;
     groups[rkey].forEach(st=>{
       const isCol=col.includes(st.id);if(isCol){cnt++;total++}
       const slot=document.createElement('div');
-      slot.className='sticker-slot '+(isCol?`collected rarity-${rkey[0]}`:'locked');
-      const em=document.createElement('span');em.className='sticker-emoji';em.textContent=st.e;slot.appendChild(em);
-      if(isCol){
-        const pip=document.createElement('div');pip.className=`rarity-pip pip-${rkey[0]}`;
-        pip.textContent=rkey==='n'?'●':rkey==='r'?'★':rkey==='s'?'✦':'♛';slot.appendChild(pip);
+      slot.className='sticker-slot '+(isCol?`collected rarity-${rkey}`:'locked rarity-'+rkey);
+      if(st.img){
+        if(isCol){
+          const im=document.createElement('img');im.className='sticker-img';im.src=st.img;im.alt=st.n||'';slot.appendChild(im);
+        }else{
+          const em=document.createElement('span');em.className='sticker-emoji';em.textContent='❓';slot.appendChild(em);
+        }
+      }else{
+        const em=document.createElement('span');em.className='sticker-emoji';em.textContent=st.e;slot.appendChild(em);
+      }
+      if(isCol && !st.img){
+        const pip=document.createElement('div');pip.className=`rarity-pip pip-${rkey}`;
+        pip.textContent=rkey==='n'?'●':rkey==='r'?'★':rkey==='s'?'✦':rkey==='u'?'♛':'♡';slot.appendChild(pip);
         const nm=document.createElement('div');nm.className='sticker-name';nm.textContent=st.n;
         slot.title=st.n;
       }
@@ -1711,8 +1771,8 @@ function renderAlbum(){
   const em=document.createElement('span');em.className='sticker-emoji';em.textContent=isSecretCol?secretSt.e:'❓';slot.appendChild(em);
   secretGrid.appendChild(slot);
   document.getElementById('ac-secret').textContent=isSecretCol?'1/1':'0/1';
-  document.getElementById('albumCount').textContent=`${total} / 101`;
-  document.getElementById('albumProgFill').style.width=(total/101*100)+'%';
+  document.getElementById('albumCount').textContent=`${total} / 116`;
+  document.getElementById('albumProgFill').style.width=(total/116*100)+'%';
   // ひみつセクションのラベル
   if(isSecretCol){
     document.querySelector('#secretSection .album-section-name').textContent='まなびランドのかみさま';
