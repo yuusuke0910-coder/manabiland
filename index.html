@@ -1688,13 +1688,13 @@ function getStickers(sc,tot,diff){
   const earned=[];const ratio=sc/tot;
   if(ratio>=0.4)earned.push(rnd(pool.n));
   if(ratio>=0.6)earned.push(rnd(pool.n));
-  if(ratio>=0.8)earned.push(rnd(pool.r));
+  if(ratio>=0.8){
+    earned.push(rnd(pool.r));
+    // 超レア枠: でんせつ:みんななかよし = 1:2（80%以上で全難易度発動・2026-04-25 条件緩和）
+    earned.push(rnd(Math.random()<1/3?pool.s:pool.f));
+  }
   if(ratio===1){
     earned.push(rnd(pool.r));
-    if(diff!=='easy'){
-      // 超レア枠: でんせつ か みんななかよし を半々で
-      earned.push(rnd(Math.random()<0.5?pool.s:pool.f));
-    }
     if(diff==='hard')earned.push(rnd(pool.u));
   }
   return[...new Set(earned)];
